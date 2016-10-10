@@ -1,4 +1,17 @@
-/* Copyright (c) 2002-2012 Croteam Ltd. All rights reserved. */
+/* Copyright (c) 2002-2012 Croteam Ltd. 
+This program is free software; you can redistribute it and/or modify
+it under the terms of version 2 of the GNU General Public License as published by
+the Free Software Foundation
+
+
+This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License along
+with this program; if not, write to the Free Software Foundation, Inc.,
+51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA. */
 
 #pragma once
 
@@ -164,7 +177,7 @@ public:
   GfxWrap tp_eWrapU, tp_eWrapV;  // wrapping states
   inline CTexParams(void) { Clear(); tp_bSingleMipmap = FALSE; };
   inline void Clear(void) { tp_iFilter = 00; tp_iAnisotropy = 0; tp_eWrapU = tp_eWrapV = (GfxWrap)NONE; };
-  inline BOOL IsEqual( CTexParams tp) { return tp_iFilter==tp.tp_iFilter && tp_iAnisotropy==tp_iAnisotropy && 
+  inline BOOL IsEqual( CTexParams tp) { return tp_iFilter==tp.tp_iFilter && tp_iAnisotropy==tp.tp_iAnisotropy && 
                                                tp_eWrapU==tp.tp_eWrapU && tp_eWrapV==tp.tp_eWrapV; };
 };
 

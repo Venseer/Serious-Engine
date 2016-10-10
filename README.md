@@ -21,6 +21,7 @@ This is the source code for Serious Engine v.1.10, including the following proje
 * `MakeFONT` Used for generating *.fnt files
 * `Shaders` Compiled shaders
 * `GameAgent` The serverlist masterserver written in Python
+* `libogg`, `libvorbis` Third party libraries used for playing OGG-encoded ingame music (see http://www.vorbis.com/ for more information)
 
 These have been modified to run correctly under the recent version of Windows. (Tested: Win7 x64, Win8 x64, Win8.1 x64)
 
@@ -28,6 +29,8 @@ Building
 --------
 
 To build Serious Engine 1, you'll need Visual Studio 2013 or 2015, Professional or Community edition ( https://www.visualstudio.com/post-download-vs?sku=community ).
+
+Do not use spaces in the path to the solution.
 
 Once you've installed Visual Studio and (optionally) DirectX8 SDK, you can build the engine solution (`/Sources/All.sln`). Press F7 or Build -> Build solution. The libraries and executables will be put into `\Bin\` directory (or `\Bin\Debug\` if you are using the Debug configuration).
 
@@ -38,7 +41,7 @@ DirectX support is disabled by default. If you need DirectX support you'll have 
 * `/Tools.Win32/Libraries/DX8SDK/Include/..`
 * `/Tools.Win32/Libraries/DX8SDK/Lib/..`
 
-MP3 and OGG playback is disabled by default. If you need these features, you will have to copy amp11lib.dll (for MP3) and/or vorbis.dll with vorbisfile.dll (for OGG) to the '\Bin\' directory (and '\Bin\Debug\' for MP3/OGG support in debug mode)
+MP3 playback is disabled by default. If you need this feature, you will have to copy amp11lib.dll to the '\Bin\' directory (and '\Bin\Debug\' for MP3 support in debug mode). The amp11lib.dll is distributed with older versions of Serious Sam: The First Encounter.
 
 3D Exploration support is disabled in the open source version of Serious Engine 1 due to copyright issues. In case if you need to create new models you will have to either use editing tools from any of the original games, or write your own code for 3D object import/export.
 
@@ -47,7 +50,7 @@ IFeel support is disabled in the open source version of Serious Engine 1 due to 
 Running
 -------
 
-This version of the engine comes with a set of resources (`\SE1_10.GRO`) that allow you to freely use the engine without any additional resources required. However if you want to open or modify levels from Serios Sam Classic: The First Encounter or The Second Encounter (including most user-made levels), you will have to copy the game's resources (.GRO files) into the engine folder. You can buy the original games on Steam, as a part of a bundle with Serious Sam Revolution ( http://store.steampowered.com/app/227780 )
+This version of the engine comes with a set of resources (`\SE1_10.GRO`) that allow you to freely use the engine without any additional resources required. However if you want to open or modify levels from Serious Sam Classic: The First Encounter or The Second Encounter (including most user-made levels), you will have to copy the game's resources (.GRO files) into the engine folder. You can buy the original games on Steam, as a part of a bundle with Serious Sam Revolution ( http://store.steampowered.com/app/227780 )
 
 When running a selected project, make sure its project settings on Debugging is set to the right command:
 * For debug:
@@ -60,7 +63,6 @@ And its working directory:
 Common problems
 ---------------
 
-In case if ECC crashes during compilation of ES files in debug mode, make your solution path shorter. Paths longer than 31 symbols are known to cause problems in debug mode.
 Before starting the build process, make sure you have a "Temp" folder in your development directory. If it doesn't exist, create it.
 SeriousSkaStudio has some issues with MFC windows that can prevent the main window from being displayed properly.
 
@@ -73,3 +75,4 @@ Some of the code included with the engine sources is not licensed under the GNU 
 
 * zlib (located in `Sources/Engine/zlib`) by Jean-loup Gailly and Mark Adler
 * LightWave SDK (located in `Sources/LWSkaExporter/SDK`) by NewTek Inc.
+* libogg/libvorbis (located in `Sources/libogg` and `Sources/libvorbis`) by Xiph.Org Foundation

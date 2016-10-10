@@ -1,4 +1,17 @@
-/* Copyright (c) 2002-2012 Croteam Ltd. All rights reserved. */
+/* Copyright (c) 2002-2012 Croteam Ltd. 
+This program is free software; you can redistribute it and/or modify
+it under the terms of version 2 of the GNU General Public License as published by
+the Free Software Foundation
+
+
+This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License along
+with this program; if not, write to the Free Software Foundation, Inc.,
+51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA. */
 
 #include "stdh.h"
 
@@ -182,6 +195,7 @@ extern INDEX mdl_bCreateStrips     = TRUE;
 extern INDEX mdl_bRenderDetail     = TRUE;
 extern INDEX mdl_bRenderSpecular   = TRUE;
 extern INDEX mdl_bRenderReflection = TRUE;
+extern INDEX mdl_bRenderBump       = TRUE;
 extern INDEX mdl_bAllowOverbright  = TRUE;
 extern INDEX mdl_bFineQuality      = TRUE;
 extern INDEX mdl_iShadowQuality    = 1;
@@ -1104,6 +1118,7 @@ void CGfxLibrary::Init(void)
   _pShell->DeclareSymbol("persistent user INDEX mdl_bRenderDetail;",     &mdl_bRenderDetail);
   _pShell->DeclareSymbol("persistent user INDEX mdl_bRenderSpecular;",   &mdl_bRenderSpecular);
   _pShell->DeclareSymbol("persistent user INDEX mdl_bRenderReflection;", &mdl_bRenderReflection);
+  _pShell->DeclareSymbol("persistent user INDEX mdl_bRenderBump;",       &mdl_bRenderBump);
   _pShell->DeclareSymbol("persistent user INDEX mdl_bAllowOverbright;",  &mdl_bAllowOverbright);
   _pShell->DeclareSymbol("persistent user INDEX mdl_bFineQuality post:MdlPostFunc;", &mdl_bFineQuality);
   _pShell->DeclareSymbol("persistent user INDEX mdl_iShadowQuality;",  &mdl_iShadowQuality);

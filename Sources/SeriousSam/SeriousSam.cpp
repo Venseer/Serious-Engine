@@ -1,4 +1,17 @@
-/* Copyright (c) 2002-2012 Croteam Ltd. All rights reserved. */
+/* Copyright (c) 2002-2012 Croteam Ltd. 
+This program is free software; you can redistribute it and/or modify
+it under the terms of version 2 of the GNU General Public License as published by
+the Free Software Foundation
+
+
+This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License along
+with this program; if not, write to the Free Software Foundation, Inc.,
+51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA. */
 
 #include "StdH.h"
 #include <io.h>
@@ -99,11 +112,8 @@ extern CTextureObject *_ptoLogoEAX = NULL;
 
 extern CTString sam_strVersion = "1.10";
 extern CTString sam_strModName = TRANS("-   O P E N   S O U R C E   -");
-#if _SE_DEMO
-  extern CTString sam_strFirstLevel = "Levels\\KarnakDemo.wld";
-#else
-  extern CTString sam_strFirstLevel = "Levels\\LevelsMP\\1_0_InTheLastEpisode.wld.wld";
-#endif
+
+extern CTString sam_strFirstLevel = "Levels\\LevelsMP\\1_0_InTheLastEpisode.wld";
 extern CTString sam_strIntroLevel = "Levels\\LevelsMP\\Intro.wld";
 extern CTString sam_strGameName = "serioussamse";
 
@@ -501,8 +511,8 @@ BOOL Init( HINSTANCE hInstance, int nCmdShow, CTString strCmdLine)
   LoadAndForceTexture(_toLogoEAX,  _ptoLogoEAX,  CTFILENAME("Textures\\Logo\\LogoEAX.tex"));
 
   // !! NOTE !! Re-enable these to allow mod support.
-  //LoadStringVar(CTString("Data\\Var\\Sam_Version.var"), sam_strVersion);
-  //LoadStringVar(CTString("Data\\Var\\ModName.var"), sam_strModName);
+  LoadStringVar(CTString("Data\\Var\\Sam_Version.var"), sam_strVersion);
+  LoadStringVar(CTString("Data\\Var\\ModName.var"), sam_strModName);
   CPrintF(TRANS("Serious Sam version: %s\n"), sam_strVersion);
   CPrintF(TRANS("Active mod: %s\n"), sam_strModName);
   InitializeMenus();      
@@ -535,10 +545,6 @@ BOOL Init( HINSTANCE hInstance, int nCmdShow, CTString strCmdLine)
   if (cmd_strPassword!="") {
     _pShell->SetString("net_strConnectPassword", cmd_strPassword);
   }
-
-#if TECHTESTONLY
-  cmd_strWorld = CTString("Levels\\TechTestElsa.wld");
-#endif
 
   // if connecting to server from command line
   if (cmd_strServer!="") {
@@ -595,10 +601,11 @@ void End(void)
 
   // destroy the main window and its canvas
   if (pvpViewPort!=NULL) {
- 	  _pGfx->DestroyWindowCanvas( pvpViewPort);
+    _pGfx->DestroyWindowCanvas( pvpViewPort);
     pvpViewPort = NULL;
     pdpNormal   = NULL;
   }
+
   CloseMainWindow();
   MainWindow_End();
   DestroyMenus();
@@ -1104,7 +1111,7 @@ int SubMain( HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine, int 
           // teleport player
           TeleportPlayer(msg.lParam);
           // restore
-    	    PostMessage(NULL, WM_SYSCOMMAND, SC_RESTORE, 0);
+          PostMessage(NULL, WM_SYSCOMMAND, SC_RESTORE, 0);
         }
       }
 
@@ -1186,15 +1193,37 @@ int SubMain( HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine, int 
 
   _pInput->DisableInput();
   _pGame->StopGame();
+  
+  if (_fnmModToLoad!="") {
+  
+    char strCmd [64] = {0};
+	char strParam [128] = {0};
+	STARTUPINFOA cif;
+	ZeroMemory(&cif,sizeof(STARTUPINFOA));
+	PROCESS_INFORMATION pi;
+	
+	strcpy_s(strCmd,"SeriousSam.exe");
+	strcpy_s(strParam," +game ");
+	strcat_s(strParam,_fnmModToLoad.FileName());
+	if (_strModServerJoin!="") {
+	  strcat_s(strParam," +connect ");
+	  strcat_s(strParam,_strModServerJoin);
+	  strcat_s(strParam," +quickjoin");
+    }	
 
+	if (CreateProcessA(strCmd,strParam,NULL,NULL,FALSE,CREATE_DEFAULT_ERROR_MODE,NULL,NULL,&cif,&pi) == FALSE)
+	{
+	  MessageBox(0, L"error launching the Mod!\n", L"Serious Sam", MB_OK|MB_ICONERROR);		
+	}
+  }
   // invoke quit screen if needed
   if( _bQuitScreen && _fnmModToLoad=="") QuitScreenLoop();
-
+  
   End();
-
   return TRUE;
 }
 
+/*
 void CheckModReload(void)
 {
   if (_fnmModToLoad!="") {
@@ -1212,9 +1241,10 @@ void CheckModReload(void)
       argv[5] = "+quickjoin";
       argv[6] = NULL;
     }
+
     _execv(strCommand, argv);
   }
-}
+}*/
 
 void CheckTeaser(void)
 {
@@ -1235,14 +1265,14 @@ void CheckBrowser(void)
 
 
 int PASCAL WinMain( HINSTANCE hInstance, HINSTANCE hPrevInstance,
-			LPSTR lpCmdLine, int nCmdShow)
+      LPSTR lpCmdLine, int nCmdShow)
 {
   int iResult;
   CTSTREAM_BEGIN {
     iResult = SubMain(hInstance, hPrevInstance, lpCmdLine, nCmdShow);
   } CTSTREAM_END;
-
-  CheckModReload();
+  
+  //CheckModReload();
 
   CheckTeaser();
 
@@ -1268,7 +1298,7 @@ BOOL TryToSetDisplayMode( enum GfxAPIType eGfxAPI, INDEX iAdapter, PIX pixSizeI,
   // destroy canvas if existing
   _pGame->DisableLoadingHook();
   if( pvpViewPort!=NULL) {
- 	  _pGfx->DestroyWindowCanvas( pvpViewPort);
+    _pGfx->DestroyWindowCanvas( pvpViewPort);
     pvpViewPort = NULL;
     pdpNormal = NULL;
   }
@@ -1300,7 +1330,7 @@ BOOL TryToSetDisplayMode( enum GfxAPIType eGfxAPI, INDEX iAdapter, PIX pixSizeI,
     // create canvas
     ASSERT( pvpViewPort==NULL);
     ASSERT( pdpNormal==NULL);
- 	  _pGfx->CreateWindowCanvas( _hwndMain, &pvpViewPort, &pdpNormal);
+    _pGfx->CreateWindowCanvas( _hwndMain, &pvpViewPort, &pdpNormal);
 
     // erase context of both buffers (for the sake of wide-screen)
     pdp = pdpNormal;
@@ -1339,7 +1369,7 @@ BOOL TryToSetDisplayMode( enum GfxAPIType eGfxAPI, INDEX iAdapter, PIX pixSizeI,
       // destroy canvas if existing
       if( pvpViewPort!=NULL) {
         _pGame->DisableLoadingHook();
- 	      _pGfx->DestroyWindowCanvas( pvpViewPort);
+        _pGfx->DestroyWindowCanvas( pvpViewPort);
         pvpViewPort = NULL;
         pdpNormal = NULL;
       }
@@ -1350,7 +1380,7 @@ BOOL TryToSetDisplayMode( enum GfxAPIType eGfxAPI, INDEX iAdapter, PIX pixSizeI,
     }
 
     // remember new settings
-	  sam_bFullScreenActive = bFullScreenMode;
+    sam_bFullScreenActive = bFullScreenMode;
     sam_iScreenSizeI = pixSizeI;
     sam_iScreenSizeJ = pixSizeJ;
     sam_iDisplayDepth = eColorDepth;
@@ -1359,10 +1389,8 @@ BOOL TryToSetDisplayMode( enum GfxAPIType eGfxAPI, INDEX iAdapter, PIX pixSizeI,
 
     // report success
     return TRUE;
-  }
-
   // if couldn't set new mode
-  else {
+  } else {
     // close the application window
     CloseMainWindow();
     // report failure

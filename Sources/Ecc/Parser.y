@@ -243,7 +243,8 @@ void DeclareFeatureProperties(void)
  * Global structure of the source file.
  */
 program 
-  : c_int {
+  : /* empty file */ {}
+  | c_int {
     int iID = atoi($1.strString);
     if(iID>32767) {
       yyerror("Maximum allowed id for entity source file is 32767");
@@ -1073,7 +1074,7 @@ statements
   ;
 statement
   : expression ';' {$$=$1+$2;}
-  | k_switch '(' expression ')' '{' statements '}' {$$=$1+$2+$3+$4+$5+$6+$7}
+  | k_switch '(' expression ')' '{' statements '}' {$$=$1+$2+$3+$4+$5+$6+$7;}
   | k_case case_constant_expression ':' {$$=$1+" "+$2+$3+" ";}
   | '{' statements '}' {$$=$1+$2+$3;}
   | expression '{' statements '}' {$$=$1+$2+$3+$4;}
